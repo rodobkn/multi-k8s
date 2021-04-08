@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: web
+  ports:
+    - port: 3000  #This is the port that OTHER PODS need to reach out to access to the clients pods.
+      targetPort: 3000  #This is the container port that we are opening. (Our react app runs in the port 3000, so we need to open the 3000)
+

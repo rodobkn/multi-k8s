@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-service
+  annotations: # Adittional configuration for the "Ingress" object
+    kubernetes.io/ingress.class: nginx # We want to use an Ingress controller based in the nginx project
+    nginx.ingress.kubernetes.io/use-regex: 'true' # We are saying that we will use regex patterns
+    nginx.ingress.kubernetes.io/rewrite-target: /$1 # We are deleting the "/api" path to reach the server with a clear one "/"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /?(.*)
+            backend:
+              serviceName: client-cluster-ip-service
+              servicePort: 3000
+          - path: /api/?(.*)
+            backend:
+              serviceName: server-cluster-ip-service
+              servicePort: 5000

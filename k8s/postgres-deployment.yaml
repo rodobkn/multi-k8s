@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1 #If we want to scale our postgres database, we need to do more configuration steps, besides to increment the replicas number
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-storage # we are linking the current container with the volume specify above in this file by the name
+              mountPath: /var/lib/postgresql/data # this is the path where postgres save the data inside the container. Therefore we want to back up this data in the persistent volume attached.
+              subPath: postgres # In the persistent volume, all the data related to postgres, will be stored in the path '/postgres'. This option is really particular of postgres.
+          env:
+            - name: POSTGRES_PASSWORD # If we don't provide an env variable to the postgres password, will use the default password. However, we are using a custom password, so we need to set up the custom password as an env variable.
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword # name of the secret object
+                  key: PGPASSWORD # the key stored inside the secret object

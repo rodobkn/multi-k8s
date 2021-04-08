@@ -1,0 +1,11 @@
+# persistent volume claim is an advertisement of all storage options that we can attach to a pod config
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: database-persistent-volume-claim
+spec:
+  accessModes:
+    - ReadWriteOnce # Can read and write data by a single node
+  resources:
+    requests:
+      storage: 2Gi # Storage option of 2Gigabytes
