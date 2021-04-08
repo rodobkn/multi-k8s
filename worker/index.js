@@ -1,6 +1,5 @@
 const keys = require('./keys');
 const redis = require('redis');
-// you need to delete this line(test purposes)
 
 const redisClient = redis.createClient({
   host: keys.redisHost,
